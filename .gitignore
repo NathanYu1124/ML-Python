@@ -1,0 +1,13 @@
+# MacOS:
+.DS_Store
+*/.DS_Store
+
+# Python:
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
+
+
