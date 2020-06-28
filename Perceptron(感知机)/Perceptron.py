@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
 
 
-# 感知机: 训练数据集必须线形可分
+# 感知机: 训练数据集必须线性可分
 class Perceptron:
 
     def __init__(self): 
@@ -94,7 +94,7 @@ def plot_data(X_data, w, b):
     plt.legend();
     
 
-
+# 测试
 X, y = load_train_data()
 ppn = Perceptron()
 ppn.train(X, y)
