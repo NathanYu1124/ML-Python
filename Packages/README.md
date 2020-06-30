@@ -2,5 +2,6 @@
 
 Python常用包的整理笔记
 
-* NumPy
+* [NumPy](https://github.com/NathanYu1124/ML-Python/blob/master/Packages/NumPy/NumPy.md)
 * Pandas
+
