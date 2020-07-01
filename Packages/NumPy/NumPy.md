@@ -50,38 +50,205 @@ c = a * b
 
 
 
-```python
-import numpy as np
-
-data = [1, 2, 3, 4, 5]
-n = np.array(data * 10)
-
-# 每一个np数组都有一个 shape 和一个叫做 dtype 的方法
-n.shape 	# shape属性表示np数组的维度(长度)
-n.dtype		# dtype属性表示数组的类型
-
-# 嵌套序列: 是由一组等长列表组成的列表
-
-```
-
-
-
 ### NumPy基础
+
+#### 数据类型
+
+| NumPy类型(dtype) | C类型        |
+| ---------------- | ------------ |
+| np.bool          | bool         |
+| np.byte          | char         |
+| np.short         | short        |
+| np.int           | int          |
+| np.uint          | unsigned int |
+| np.longlong      | long long    |
+| np.float         | float        |
+| np.double        | double       |
+
+
 
 #### 创建数组
 
 ```python
-# 创建NumPy数组ndarray的5种常规方法:
+# 创建NumPy数组的最重要方法:
 # 1.从Python结构（例如，列表，元组）转换
 # 2.numpy原生数组的创建（例如，arange、ones、zeros等）
-# 3.从磁盘读取数组，无论是标准格式还是自定义格式
-# 4.通过使用字符串或缓冲区从原始字节创建数组
-# 5.使用特殊库函数（例如，random）
+
+# 0.numpy数组的常用属性:
+# -> ndim(维度)
+# -> shape(行数和列数)
+# -> size(元素个数)
 
 # 1.将Python array_like对象转换为Numpy数组, 通常使用array()函数将其转换为Numpy数组
+x = np.array([2,3,1,0])		# 用list创建
+
+
+# 2.Numpy原生数组的创建 
+np.zeros((2, 3))			#	创建数据全为0的数组, 参数:(shape, dtype, order)
+np.ones((2, 3))				#	创建数据全为1的数组, 参数:(shape, dtype, order)
+np.empty((3, 5))			# 创建数据接近0的数组, 参数:(shape, dtype, order)
+np.arange(10,20,2)		#	创建数据为指定范围按步长增长的数组, 参数:(start, stop, step, dtype) 
+np.linspace(1,4,6)		# 创建指定数量并在范围内平均间隔的数组，
+											# 参数:(start,stop,num,endpoint,retstep,dtype,axis))
+np.indices((3,3))			# 参数:(dimensions, dtype=int, sparse=False)
+
+```
+
+
+
+#### NumPy基本运算
+
+```python
+a = np.array([10,20,30,40])		# array([10, 20, 30, 40])
+b = np.arange(4)							# array([0, 1, 2, 3])
+c = np.array([[1,2], [4,5]])	# array([[1,2], [4,5]])
+
+# 1.加法运算
+c = a + b			# array([10, 21, 32, 43])
+
+# 2.减法运算
+c = a - b		  # array([10, 19, 28, 37])
+	
+# 3.乘法运算: 对应元素相乘
+c = a * b 		# array([0, 20, 60, 120])
+
+# 4.乘法运算: 矩阵乘法运算
+c = np.dot(a, b)		# 行向量*列向量, 200
+
+# 5.乘方运算	
+c = b ** 2		# array([0, 1, 4, 9])
+
+# 矩阵所有元素求和
+np.sum(a)			# 100
+
+# 矩阵所有元素寻找最小值
+np.min(a)			# 10
+
+# 矩阵所有元素寻找最大值
+np.max(a)			# 40
+
+# 矩阵的均值
+np.mean(a)			# 25.0
+np.average(a)		# 25.0
+
+# 矩阵的累加之和: 每一项矩阵元素都是从原矩阵首项累加到对应项的元素之和
+np.cumsum(a)		# [10, 30, 60, 100]
+
+# 矩阵转置
+np.transpose(c)
+c.T
+```
+
+
+
+#### NumPy索引
+
+```python
+a = np.array([3, 4, 5, 6, 7, 8, 9, 10])
+b = np.array([[3, 4, 5, 6], [7, 8, 9, 10]])
+
+# 一维索引: [0, len(a) - 1]
+a[3]			# 6
+b[1]			# [7, 8, 9, 10]
+
+# 二维索引
+b[0][1]		# 4
+b[0, 1]		# 4
+b[0, 1:3]	# [4, 5], : 切片操作
+
+```
+
+
+
+#### NumPy数组合并
+
+```python
+a = np.array([1, 1, 1])
+b = np.array([2, 2, 2])
+
+# 上下合并
+np.vstack(a, b)		# [[1,1,1], [2,2,2]]
+
+# 左右合并
+np.hstack(a, b)		# [1,1,1,2,2,2]
+
+# 行/列的转置 -> 矩阵: np.newaxis()
+c = a[np.newaxis, :]	# [[1,1,1]], 				1X3的矩阵
+c = a[:, np.newaxis]	# [[1], [1], [1]],	3X1的矩阵
+
+# 合并多个矩阵或序列: np.concatenate()
+A = np.array([1,1,1])[:,np.newaxis]		# 3X1的矩阵
+B = np.array([2,2,2])[:,np.newaxis]		# 3X1的矩阵
+
+c = np.concatenate((A,B,A), axis=0)		# axis = 0,纵向合并, axis = 1, 横向合并
+
+```
+
+
+
+#### NumPy数组分割
+
+```python
+
 
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
