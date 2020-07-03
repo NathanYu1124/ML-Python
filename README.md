@@ -6,3 +6,5 @@
 
 第二章 [感知机(Perceptron)](https://github.com/NathanYu1124/ML-Python/blob/master/Perceptron(%E6%84%9F%E7%9F%A5%E6%9C%BA)/Perceptron.py)
 
+第四章 朴素贝叶斯(NaiveBayes)
+
