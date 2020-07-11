@@ -1,102 +1,90 @@
-import pandas as pd
+
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
 
-
-# 感知机: 训练数据集必须线性可分
-class Perceptron:
-
-    def __init__(self): 
-        self.learning_rate = 0.1
-        self.has_trained = False
+# 感知机
+class Perceptron():
+    
+    # 初始化
+    def __init__(self, max_iter=500, learning_rate=0.1, loss_tolerance=0.001):
+        # 最大迭代次数-用于随机梯度下降
+        self.max_iter = max_iter
+        # 学习率-用于随机梯度下降, 范围为(0, 1]
+        self.learning_rate = learning_rate
+        # 最小误差-用于随机梯度下降
+        self.loss_tolerance = loss_tolerance
         
-    def sign(self, x, w, b):
-        res = np.dot(x, w) + b
-        return (1 if res >= 0 else -1)
-
-    # 训练来获取w和b
-    def train(self, X_train, y_train):
+    # 模型训练
+    def train(self, X, y):
+        # 样本个数(行数), 样本的特征个数(列数)
+        n_sample, n_feature = X.shape
         
-        self.has_trained = True
+        # 用于随机数生成
+        rnd_val = 1 / np.sqrt(n_feature)
+        rng = np.random.default_rng()
+    
+        # 初始化模型参数w和b
+        self.w = rng.uniform(-rnd_val, rnd_val, size=n_feature)
+        self.b = 0
         
-        # 参数w,b初始化
-        self.w = np.ones(X_train.shape[1], dtype=np.float32)
-        self.b = 0.0
+        cur_iter = 0    # 当前循环次数
+        pre_loss = 0    # 上一轮的损失
         
-        # 是否有误分类点
-        has_wrong = True
-        while has_wrong:
-            wrong_count = 0
-            for i in range(len(X_train)):
-                X = X_train[i]
-                y = y_train[i]
+        while True:
+            cur_loss = 0    # 当前轮的损失
+            wrong_num = 0   # 误分类的样本数
+            # 遍历所有样本
+            for i in range(n_sample):
+                y_pred = np.dot(self.w, X[i]) + self.b
+                cur_loss += -y[i] * y_pred
                 
-                if y * self.sign(X, self.w, self.b) <= 0:
-                    self.w = self.w + self.learning_rate * np.dot(y, X)
-                    self.b = self.b + self.learning_rate * y
-                    wrong_count += 1
+                # 随机梯度下降法来更新参数
+                if y[i] * y_pred <= 0:
+                    self.w += self.learning_rate * X[i] * y[i]
+                    self.b += self.learning_rate * y[i]
+                    wrong_num += 1
                     
-            if wrong_count == 0:
-                has_wrong = False
-        print("训练完成")   
+            cur_iter += 1
+            loss_diff = cur_loss - pre_loss
+            pre_loss = cur_loss
+            
+            # 循环终止条件:
+            # 1.迭代次数达到指定的最大次数
+            # 2.当前轮与上一轮的损失差小于指定的阀值
+            # 3.误分类点个数为0
+            if cur_iter >= self.max_iter or abs(loss_diff) < self.loss_tolerance or wrong_num == 0:
+                break;
     
-    # 用训练后的w和b来预测
-    def predict(self, X_data):
-        if self.has_trained:
-            labels = []
-            for x in X_data:
-                labels.append(self.sign(x, self.w, self.b))
-            return labels
-        else:
-            print("predict_Error: 请先训练数据以获取参数w和b")
-    
-    # 获取当前模型的正确率
-    def get_correct_rate(self, validate_data, validate_labels):
-        labels = self.predict(validate_data)
-        same_count = np.sum(labels == validate_labels)
-        return float(same_count) / len(validate_labels)
-    
-    
-    # 获取感知机当前的w和b
-    def get_current_para(self):
-        if self.has_trained:
-            return self.w, self.b
-        else:
-            print("Error: 请先训练数据以获取参数w和b") 
+    # 预测
+    def predict(self, x):
+        y_pred = np.dot(self.w, x) + self.b
+        return 1 if y_pred >= 0 else -1
+                
 
-
-# 获取训练数据
-def load_train_data():
-    iris = load_iris()
-    df = pd.DataFrame(iris.data, columns=iris.feature_names)
-    df['label'] = iris.target
-    df.columns = ['sepal length', 'sepal width', 'petal length', 'petal width', 'label']
- 
-    data = np.array(df.iloc[:100, [0, 1, -1]])
-    X, y = data[:, :-1], data[:, -1]
-    y = np.array([1 if i == 1 else -1 for i in y])
-    
-    return X, y
-
-
-
-# 数据分类可视化
-def plot_data(X_data, w, b):
-    x_points = np.linspace(4, 7, 10)
-    y_hat = -(w[0] * x_points + b) / w[1]
-    plt.plot(x_points, y_hat)
-
-    plt.scatter(X_data[:50, 0], X_data[:50, 1], c='red', label='0')
-    plt.scatter(X_data[50:100, 0], X_data[50:100, 1], c='green', label='1')
-    plt.xlabel('sepal length')
-    plt.ylabel('sepal width')
-    plt.legend();
-    
 
 # 测试
-X, y = load_train_data()
-ppn = Perceptron()
-ppn.train(X, y)
-w, b = ppn.get_current_para()
-plot_data(X, w, b)
+def main():
+    
+    X, y = load_iris(return_X_y=True)
+    y[:50] = -1
+    x_train, x_test, y_train, y_test = train_test_split(X[:100], y[:100], train_size=0.7, shuffle=True)
+        
+    model = Perceptron()
+    model.train(x_train, y_train)
+        
+    n_test = x_test.shape[0]
+    n_right = 0
+    for i in range(n_test):
+        y_pred = model.predict(x_test[i])
+        if y_pred == y_test[i]:
+            n_right += 1
+        else:
+            print("该样本真实标签为：{}，但是Scratch模型预测标签为：{}".format(y_test[i], y_pred))
+    print("Perceptron模型在测试集上的准确率为：{}%".format(n_right * 100 / n_test))
+    print(n_right, n_test)
+    
+    
+    
+if __name__ == "__main__":
+    main()
