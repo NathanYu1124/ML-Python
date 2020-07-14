@@ -10,6 +10,7 @@
 
 第四章 [朴素贝叶斯(NaiveBayes)](https://github.com/NathanYu1124/ML-Python/blob/master/NaiveBayes(%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF)/NaiveBayes.py)
 
-第五章 决策树(DecisionTree)
+第五章 [决策树(DecisionTree)](https://github.com/NathanYu1124/ML-Python/tree/master/DecisionTree(%E5%86%B3%E7%AD%96%E6%A0%91))
 
-第六章 逻辑回归(LogisticRegression)
+第六章 [逻辑回归(LogisticRegression)](https://github.com/NathanYu1124/ML-Python/blob/master/LogisticRegression(%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92)/LogisticRegression.py)
+
